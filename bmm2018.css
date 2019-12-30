@@ -1,0 +1,155 @@
+#slider{
+	width: 100%;
+}
+
+/* The slider itself */
+.slider {
+  -webkit-appearance: none;  /* Override default CSS styles */
+  appearance: none;
+  outline: none; /* Remove outline */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 20px; /* Set a specific slider handle width */
+  height: 20px; /* Slider handle height */
+  background: #01aa46; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+  border-radius: 50%;
+}
+
+.slider::-moz-range-thumb {
+  width: 20px; /* Set a specific slider handle width */
+  height: 20px; /* Slider handle height */
+  background:#01aa46; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+  border-radius: 50%;
+}
+.mapboxgl-ctrl-bottom-left{
+	/*bottom: 60px;*/
+      z-index: auto;
+}
+.mapboxgl-ctrl-bottom-right{
+	/*bottom: 60px;*/
+      z-index: auto;
+}
+.bar{
+  display:none;
+  cursor: pointer;
+}
+input[name='radio-bar']{
+  display:none;
+}
+input[name='radio-bar']:checked + div.bar{
+  display:block !important;
+}
+.btna.active{
+  background-color: #01aa46!important;
+}
+.btna.active > i{
+  color: white !important;
+}
+
+
+
+
+/* TOOLTIP */
+.tooltip {
+  position: relative;
+}
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 54px;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: black transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+
+
+#tt-nb-div{
+  margin-bottom: 0.5rem;
+  height: auto;
+  position: relative;
+}
+.night{
+  background: #495057;
+  color: #F7F5C5;
+  transition: background-color .4s ease;
+  fill: #F7F5C5;
+}
+.day{
+  background: #F7F5C5;
+  color: #495057;
+  transition: background-color .4s ease;
+  fill: #495057;
+}
+#tt-sun{
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+
+
+/* TAB*/
+#tablinks-div{
+ left: 50%;
+ margin-left:-103px;
+ margin-top: 5px;
+ z-index: 1;
+}
+
+.tablinks {
+  transition: 0.3s;
+}
+.tabcontent {
+  /*padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;*/
+  height: 100%;
+}
+
+
+
+
+
+
+
+.caxis{
+  display: inline;
+  text-align: right;
+}
+.fa-stopwatch{
+  margin: 4px 0px 5px 0px;
+  padding-right: 6px;
+}
+#btn-go{
+  margin: auto;
+  display: inherit;
+}
+

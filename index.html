@@ -1,0 +1,238 @@
+ <!DOCTYPE html>
+ <html>
+ <head>
+	<meta charset='utf-8' />
+	<title>Bird Migration Map 2018</title>
+	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+	<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.js'></script>
+	<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.css' rel='stylesheet' />
+	<script  src="https://code.jquery.com/jquery-3.4.1.min.js"  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="  crossorigin="anonymous"></script>
+	<script src='/2018/colorbrewer/index.js'></script>
+	<link href='/2018/colorbrewer/colorbrewer.css' rel='stylesheet' />
+	<script async defer src="https://api.mapbox.com/mapbox-assembly/v0.23.2/assembly.js"></script>
+	<link href="https://api.mapbox.com/mapbox-assembly/v0.23.2/assembly.min.css" rel="stylesheet">
+	<script src="https://kit.fontawesome.com/f15ed359e8.js" crossorigin="anonymous"></script>
+	<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.9.3/intro.min.js'></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.4/raphael-min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/justgage/1.2.9/justgage.min.js"></script>
+	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+	<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.css' type='text/css' />
+	<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.js'></script>
+	<script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
+	<style>
+		body { margin:0; padding:0; }
+		#map { position:absolute; top:0; bottom:0; width:100%; }
+	</style>
+</head>
+<body>
+	
+	<div id='map'></div>
+	
+	<div id="modal-loading" class='z5 fixed top right bottom left scroll-auto bg-darken25 viewport-full'>
+		<div class='flex-parent flex-parent--center-main flex-parent--center-cross pt36' id="modal-bkg">
+			<div class='flex-child bg-white round relative w600'>
+				<button class='absolute top right px12 py12' id="modal-close" style="display: none;">
+					<svg class='icon link color-darken50'><use xlink:href='#icon-close'></use></svg>
+				</button>
+				<div class='px24 py24'>
+					<div class='txt-l' id="modal-title">Loading the data...</div>
+					<div class='h12 bg-darken10 relative round-full flex-parent--center-main mb12' id="progressbardiv">
+						<div class='absolute h12 bg-green-light round-full' id="progressbar"></div>
+					</div>
+					<div class='txt-l mb12'>Some quick tips to navigate the map:</div>
+					<div class='txt-m'>		
+						<ul class="fa-ul">
+							<li><span class="fa-li"><i class="far fa-hand-pointer"></i></span>Click on map or radar to display current values of density and flight speed.</li>
+						</ul>	
+						<b>Time bar (bottom):</b>
+						<ul class="fa-ul">
+							<li><span class="fa-li"><i class="fas fa-stopwatch color-green"></i></span>Change the time resolution of the animation</li>
+	
+							<li><span class="fa-li"><i class="fas fa-tachometer-alt color-green"></i></span>Change the speed of animation (frames/sec)</li>
+							<li><span class="fa-li"><i class="fas fa-step-forward color-green"></i></span>Skip or display daytime data</li>
+						</ul>
+
+						<b>Layer selection (top-right):</b>
+						<div class='txt-ul'>
+							<div class='txt-li'>Adjust the density colorbar (linear/log scale, colormap, range and opacity)</div>
+							<div class='txt-li'>Display or hide radar data (actual measurements of the radar)</div>
+							<div class='txt-li'>Apply a mask for rain (> 1mm/hr).</div>
+							<!--<div class='txt-li'><kbd class='txt-kbd'>&uarr;</kbd>: Faster</div>
+							<div class='txt-li'><kbd class='txt-kbd'>&darr;</kbd>: move to the next frame</div>-->
+						</div>
+
+						<b>Keyboard shortcuts:</b>
+						<div class='txt-ul'>
+							<div class='txt-li'><kbd class='txt-kbd'>Space</kbd>: Pause/play the animation</div>
+							<div class='txt-li'><kbd class='txt-kbd'>&larr;</kbd>: Move to the previous frame</div>
+							<div class='txt-li'><kbd class='txt-kbd'>&rarr;</kbd>: Move to the next frame</div>
+							<!--<div class='txt-li'><kbd class='txt-kbd'>&uarr;</kbd>: Faster</div>
+							<div class='txt-li'><kbd class='txt-kbd'>&darr;</kbd>: move to the next frame</div>-->
+						</div>
+
+						
+					</div>
+
+					
+					<button class='btn btn--green mt24' id="btn-go" style="display: none;">Go!</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="absolute top-ml left z1 w240-ml px12 py12-ml">
+		<div class="flex-parent flex-parent--column viewport-third h-auto-ml hmax-full bg-white round-ml shadow-darken10">
+			<div class="px12 py12 scroll-auto">
+				<h3 class="txt-m txt-bold mb6">Bird Migration Map 2018</h3>
+				<p>After the <a class='link' href="https://bmm.raphaelnussbaumer.com/" target="_blank">first mapping of European nocturnal bird migration in autumn 2016</a>, this newly designed map shows the bird migration for the whole year of 2018. </p>
+				<p>This time, we used <a href="https://github.com/mapbox/mapbox-gl-js" target="_blank" class='link'>mapbox-gl-js</a> to display a vectorial map allowing to custum the visualization on the browser (log-scale, colorbar, etc...) </p>
+				<button class='flex-parent flex-parent--center-cross btn btn--s btn--stroke btn--green round' id="howtonav"><svg class='icon h18 w18 mr3'><use xlink:href='#icon-info'/></svg> How to navigate?</button>
+			</div>
+			<footer class="px12 py12 bg-gray-faint round-b-ml txt-s">
+				<a class='link' href="https://www.researchgate.net/project/Bird-Migration-Modelling-BMM" target="_blank"><i class="fab fa-researchgate"></i>/Bird-Migration-Modelling-BMM</a>
+				<a class='link' href="https://rafnuss-postdoc.github.io/BMM/" target="_blank"><i class="fab fa-github"></i>/Rafnuss-PostDoc/BMM</a>
+			</footer>
+		</div>
+	</div>
+	
+	<div class='fixed top right w240  txt-s mx12 my12 '>
+		<div class='round bg-white shadow-darken10 px12 py12'>
+			<div class='flex-parent flex-parent--space-between-main'>
+				<div class="flex-child"><b>Bird density</b> <span class="txt-xs">[bird/km<sup class='txt-sup'>2</sup>]<span></span></div>
+				<div class="flex-child">
+					<label class='switch-container'>
+						<input type='checkbox' id='logscale' checked />
+						<div class='switch mr6 top '></div>
+						Log scale
+					</label>
+				</div>
+			</div>
+			<div class="round">
+				<label><input class="mt6" name='radio-bar' type='radio' value="YlOrBr" ></label>
+				<label><input class="mt6" name='radio-bar' type='radio' value="YlGn"></label>
+				<label><input class="mt6" name='radio-bar' type='radio' value="BrBG"></label>
+				<label><input class="mt6" name='radio-bar' type='radio' value="Spectral" checked></label>
+			</div>
+			<div class='grid txt-xs'>
+				<div class='flex-child--grow'><input type="number" min="1" class='input textarea--s w60 caxis' id="caxismin" value='1' /></div>
+				<div class='flex-child--grow align-r'><input type="number" min="1" class='input textarea--s w60 caxis' id="caxismax" value='100' /></div>
+			</div>
+			<div class='flex-parent bg-darken10 px6 flex-parent--center-cross'>
+				<div class='flex-child flex-child--no-shrink pr6 '>Opacity</div>
+				<div class='flex-child flex-child--grow'>
+					<div class='range range--s'>
+						<input type='range' id="opacity" min='0' max='1' step='0.1' value='0.7'/>
+					</div>
+				</div>
+			</div>
+			<label class='switch-container'>
+				<input type='checkbox' id='radar' checked/>
+				<div class='switch mr6 top '></div>
+				Hide/show radars
+			</label>
+			<label class='switch-container'>
+				<input type='checkbox' id='rain'/>
+				<div class='switch mr6 top '></div>
+				Hide/show rain
+			</label>
+		</div>
+		<div id="tt-nb-div" class="night mt12 round">
+			<div id="gauge"></div>
+			<i id="tt-sun" class="fas fa-2x fa-moon"></i>
+		</div>
+	</div>
+	
+	<div class='fixed w-full bottom py12 px12'>
+		<div class="h300 bg-white" id="timelinediv" style="display: none;">
+			<!--<div class="flex-parent-inline absolute" id="tablinks-div">
+				<button class="tablinks btn btn--pill btn--pill-hl is-active" onclick="openTab(event, 'plot_density')">Density</button>
+				<button class="tablinks btn btn--pill btn--pill-hc" onclick="openTab(event, 'plot_sum')">Sum</button>
+				<button class="tablinks btn btn--pill btn--pill-hr" onclick="openTab(event, 'plot_mtr')">Flux</button>
+			</div>-->
+			<div id="plot_density" class="tabcontent"></div>
+			<!--<div id="plot_sum" class="tabcontent " style="display: none;"></div>
+				<div id="plot_mtr" class="tabcontent " style="display: none;"></div>-->
+			</div>
+			<div class='flex-parent flex-parent--row flex-parent--center-cross border border--gray-light round'>
+				<div class="tooltip">
+					<button class='flex-child py12 px18 border-r border--gray-light bg-white bg-green-light-on-hover cursor-pointer round-l' onclick="bweButton()">
+						<i class="fas fa-backward color-green"></i>
+					</button>
+					<span class="tooltiptext">Step back</span>
+				</div>
+				<div class="tooltip">
+					<button class='flex-child py12 px18 border-r border--gray-light bg-white bg-green-light-on-hover cursor-pointer' onclick="ppeButton()">
+						<i id="ppeButton-i" class="fas fa-pause color-green"></i>
+					</button>
+					<span class="tooltiptext">Play/Pause</span>
+				</div>
+				<div class="tooltip">
+					<button class='flex-child py12 px18 border-r border--gray-light bg-white bg-green-light-on-hover cursor-pointer' onclick="fweButton()">
+						<i class="fas fa-forward color-green"></i>
+					</button>
+					<span class="tooltiptext">Step forward</span>
+				</div>
+				<div class="tooltip">
+					<button class='flex-child py12 px18 border-r border--gray-light bg-white bg-green-light-on-hover cursor-pointer btna active' id='neeButton' onclick="neeButton()">
+						<i class="fas fa-step-forward color-green"></i>
+					</button>
+					<span class="tooltiptext">Skip day</span>
+				</div>
+				<div class='flex-child flex-child--no-shrink py12 px12 border-r border--gray-light bg-white'>
+					<span id="date">01/01/2018&nbsp;00:00</span>
+				</div>
+				<div class="tooltip">
+					<div class='flex-parent py12 px18 border-r border--gray-light bg-white' >
+						<i class="fas fa-stopwatch color-green"></i>
+						<div class='select-container w60'>
+							<select id="resolution" class='select select--s' onchange="resolution=parseInt(this.value);">
+								<option value="1">15min</option>
+								<option value="4" selected>1hr</option>
+								<option value="12">3hrs</option>
+								<option value="96">1day</option>
+							</select>
+							<div class='select-arrow'></div>
+						</div>
+					</div>
+					<span class="tooltiptext">Resolution</span>
+				</div>
+				<div class="tooltip">
+					<button class='flex-child py12 px18 border-r border--gray-light bg-white bg-green-light-on-hover cursor-pointer btna' id="tlButton">
+						<i class="fas fa-chart-line color-green"></i>
+					</button>
+					<span class="tooltiptext">Timeline</span>
+				</div>
+				<div class='flex-child pb6 px18 border-r border--gray-light flex-child--grow bg-white w-full' style="padding-top: 7px!important;">
+					<input id='slider' class="slider w-full h12 bg-darken10 round-full" type='range' min='0' max='35071' step='1' value='4196' onchange="sliderchange(event);"/>
+					<div class="grid txt-xs mx-neg12 my-neg2 flex-parent--space-between-main">
+						<p>01-Jan</p>
+						<p>01-Feb</p>
+						<p>01-Mar</p>
+						<p>01-Apr</p>
+						<p>01-May</p>
+						<p>01-Jun</p>
+						<p>01-Jul</p>
+						<p>01-Aug</p>
+						<p>01-Sep</p>
+						<p>01-Oct</p>
+						<p>01-Nov</p>
+						<p>01-Dec</p>
+						<p>01-Jan</p>
+					</div>
+				</div>
+				<div class='range py24 px12 border-r border--gray-light bg-white round-r' id="speed-div">
+					<i class="fas fa-tachometer-alt color-green"></i>
+					<div class="tooltip range">
+						<input id="speed" class="pl6" type='range' min='1' max='10' step='1' value='3' onchange="speed=parseInt(this.value);" style="display:none;"/>
+						<span class="tooltiptext" id="speed-toltip">5 frames/sec</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</body>
+	<footer>
+		<script src='/2018/bmm2018.js'></script>
+		<link href='/2018/bmm2018.css' rel='stylesheet' />
+	</footer>
+	</html>

@@ -142,6 +142,8 @@ input[name='radio-bar']:checked + div.bar{
 
 .caxis{
   display: inline;
+}
+#caxismax{
   text-align: right;
 }
 .fa-stopwatch{

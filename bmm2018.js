@@ -1,7 +1,7 @@
 
 let date, time=[];
 const d0 = new Date('01-Jan-2018Z');
-jQuery.getJSON('/2018/date.json', function(data){
+jQuery.getJSON('/2018/assets/date.json', function(data){
 	date=data;
 	var d = new Date(d0);
 	for (var i = 0; i < date.length; i += 1) {
@@ -28,7 +28,7 @@ map.addControl(draw_poly);
 map.on('draw.create', function(e){
 	if (e.features[0].geometry.type == 'Point'){
 		console.log('Point')
-		oReq_ll.open("GET", "/2018/bin/ll_" + findNearest(e.features[0].geometry.coordinates) + ".bin", true);
+		oReq_ll.open("GET", "/2018/assets/bin/ll_" + findNearest(e.features[0].geometry.coordinates) + ".bin", true);
 		oReq_ll.send(null);
 	} else if (e.features[0].geometry.type == 'Polygon') {
 		
@@ -113,7 +113,7 @@ oReq.onprogress = function(oEvent) {
 		jQuery('#progressbar').css('width',percentComplete+'%')
 	}
 };
-oReq.open("GET", "/2018/density.bin", true);
+oReq.open("GET", "/2018/assets/density.bin", true);
 oReq.send(null);
 
 
@@ -138,7 +138,7 @@ oReq2.onload = function (oEvent) {
 		}
 	}
 };
-oReq2.open("GET", "/2018/rain.bin", true);
+oReq2.open("GET", "/2018/assets/rain.bin", true);
 oReq2.send(null);
 
 
@@ -146,7 +146,7 @@ oReq2.send(null);
 map.on('load', function() {
 	
 	color = jQuery('input[name="radio-bar"]:checked').val();
-	jQuery.getJSON('/2018/grid.geojson', function(geojson){
+	jQuery.getJSON('/2018/assets/grid.geojson', function(geojson){
 		grid_geojson = geojson;
 		map.addSource('grid_source', { 
 			type: 'geojson', 
@@ -169,12 +169,19 @@ map.on('load', function() {
 		}
 	})
 	
-	jQuery.getJSON('/2018/quiver.geojson', function(geojson){
+	jQuery.getJSON('/2018/assets/quiver.geojson', function(geojson){
 		
-		map.loadImage('/2018/right-arrow.png', function(error, image) {
+		quiver_geojson = geojson;
+		quiver_geojson.features = quiver_geojson.features.map( r => {
+			r.properties.size = 0
+			r.properties.angle = 0
+			return r
+		});
+
+		map.loadImage('/2018/assets/right-arrow-grey.png', function(error, image) {
 			map.addImage('arrow', image);
 			
-			quiver_geojson = geojson;
+			
 			map.addSource('quiver_source', { 
 				type: 'geojson', 
 				data: quiver_geojson,
@@ -207,14 +214,17 @@ map.on('load', function() {
 		})
 	})
 
-	jQuery.getJSON('/2018/radar.geojson', function(geojson){
+	jQuery.getJSON('/2018/assets/radar.geojson', function(geojson){
 		radar_geojson = geojson;
 
-		// Initite with first value
+		// Initite with 0 data (invisiable on map)
 		radar_geojson.features = radar_geojson.features.map( r => {
-			r.properties.value = r.properties.dens[0]/100
+			r.properties.value = 0
+			r.properties.size = 0
+			r.properties.angle = 0
 			return r
 		});
+
 		map.addSource('radar_source', { 
 			type: 'geojson', 
 			data: radar_geojson
@@ -228,13 +238,13 @@ map.on('load', function() {
 				"circle-color": getFillColor(color),
 				//"circle-opacity": parseFloat(jQuery('#opacity').val()),
 				'circle-stroke-width' : 1,
-				'circle-stroke-color' : '#FFFFFF',
+				//'circle-stroke-color' : '#FFFFFF',
 				'circle-radius': 6,
 			},
 			"filter": ["!=", "value", 0]
 		})
 
-		map.loadImage('/2018/right-arrow-radar.png', function(error, image) {
+		map.loadImage('/2018/assets/right-arrow-black.png', function(error, image) {
 			map.addImage('arrow-radar', image);
 			map.addLayer({
 				id: 'radar_quiver_layer',
@@ -394,7 +404,7 @@ map.on('load', function() {
 			col.push(d3colors(i));
 		}
 		
-		jQuery.getJSON('/2018/MTR.json',function(MTR){
+		jQuery.getJSON('/2018/assets/MTR.json',function(MTR){
 			
 			gd_style ={
 				width: '100%',
@@ -500,7 +510,7 @@ const sliderchange = function(){
 		map.setLayoutProperty('grid_layer', 'visibility', 'visible');
 		map.setLayoutProperty('quiver_layer', 'visibility', 'visible');
 		map.setLayoutProperty('radar_layer', 'visibility', 'visible');
-		//oReq.open("GET", "/2018/bin/density_" + String(date[s.value]) + ".bin", true);
+		//oReq.open("GET", "/2018/assets/bin/density_" + String(date[s.value]) + ".bin", true);
 		//oReq.send(null);
 		
 		let dt = dens[date[s.value]]

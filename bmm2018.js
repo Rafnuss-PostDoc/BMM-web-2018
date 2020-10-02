@@ -1,6 +1,6 @@
 
 let date, time=[];
-const d0 = new Date('01-Jan-2018Z');
+const d0 = new Date(2018,01,01);
 jQuery.getJSON('/2018/assets/date.json', function(data){
 	date=data;
 	var d = new Date(d0);
@@ -43,8 +43,6 @@ map.on('draw.update', function(e){
 	
 });
 
-
-
 var findNearest = function(latlng){
 	var est_grid = quiver_geojson.features.map( (x) => x.geometry.coordinates);
 	var acc = est_grid.reduce(function(acc, curr, id_curr) {
@@ -54,13 +52,6 @@ var findNearest = function(latlng){
 	return acc[1]
 }
 */
-
-
-
-
-
-
-
 
 
 
@@ -114,8 +105,6 @@ oReq.onprogress = function(oEvent) {
 	}
 };
 oReq.open("GET", "/2018/assets/density.bin", true);
-oReq.send(null);
-
 
 
 
@@ -139,7 +128,13 @@ oReq2.onload = function (oEvent) {
 	}
 };
 oReq2.open("GET", "/2018/assets/rain.bin", true);
-oReq2.send(null);
+
+
+if (!window.matchMedia("only screen and (max-width: 760px)").matches) {
+	oReq.send(null);
+	oReq2.send(null);
+}
+
 
 
 
@@ -509,7 +504,7 @@ const sliderchange = function(){
 	if (date[s.value]>0){
 		map.setLayoutProperty('grid_layer', 'visibility', 'visible');
 		map.setLayoutProperty('quiver_layer', 'visibility', 'visible');
-		map.setLayoutProperty('radar_layer', 'visibility', 'visible');
+		//map.setLayoutProperty('radar_layer', 'visibility', 'visible');
 		//oReq.open("GET", "/2018/assets/bin/density_" + String(date[s.value]) + ".bin", true);
 		//oReq.send(null);
 		
@@ -561,7 +556,7 @@ const sliderchange = function(){
 		map.setLayoutProperty('grid_layer', 'visibility', 'none');
 		map.setLayoutProperty('quiver_layer', 'visibility', 'none');
 		map.setLayoutProperty('radar_layer', 'visibility', 'none');
-		gauge.refresh(dt.reduce( (a,i) => {return a+i})/100*500/1000000);
+		gauge.refresh(dens[date[s.value]].reduce( (a,i) => {return a+i})/100*500/1000000);
 		jQuery('#tt-nb-div').removeClass('night').addClass('day')
 		jQuery('#tt-sun').removeClass('fa-moon').addClass('fa-sun')		
 		jQuery('#gauge > svg > text:nth-child(5) > tspan').removeClass('night').addClass('day')
@@ -580,6 +575,12 @@ const loaded = () => {
 	jQuery('#progressbardiv').hide()
 	jQuery('#modal-title').html("Data loaded. Press 'Go' (bottom) when ready!")
 	jQuery('#modal-close').show()
+	map.fitBounds([
+		[-2.406277,42.878452],
+		[16.042070,55.527677]
+		],{
+			padding: {top: 0, bottom:60, left: 228, right: 252}
+		});
 }
 
 const animate = () => {
@@ -611,9 +612,7 @@ const getFillColor = (color) => {
 			c.push(colorbrewer[color][9][i])
 		}
 	}
-	console.log(c)
 	return c
-	
 }
 
 const ppeButton = () => {

@@ -73,6 +73,9 @@ input[name='radio-bar']:checked + div.bar{
   left: 50%;
   margin-left: -60px;
 }
+.tooltiptext-interest {
+  bottom: 13px !important;
+}
 
 .tooltip .tooltiptext::after {
   content: "";
@@ -133,10 +136,24 @@ input[name='radio-bar']:checked + div.bar{
   border-top: none;*/
   height: 100%;
 }
-
-
-
-
+.ticks{
+    position: relative;
+    display: flex;
+    width: 1px;
+    background: gray;
+    height: 5px;
+    margin: auto;
+}
+.interest-box{
+  margin-bottom: -3px; 
+  margin-top: -2px;
+}
+.interest{
+  position: relative;
+  display: flex;
+  background: red;
+  height: 7px;
+}
 
 
 
@@ -155,3 +172,6 @@ input[name='radio-bar']:checked + div.bar{
   display: inherit;
 }
 
+.mapboxgl-popup-close-button{
+  padding: 1px 6px;
+}

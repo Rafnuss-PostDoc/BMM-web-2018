@@ -30,6 +30,7 @@
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.4/raphael-min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/justgage/1.2.9/justgage.min.js"></script>
 	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+	<link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
 	<!--<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.css' type='text/css' />
 	<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.js'></script>
 	<script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>-->
@@ -52,7 +53,12 @@
 				<button class='absolute top right px12 py12' id="modal-close" style="display: none;">
 					<svg class='icon link color-darken50'><use xlink:href='#icon-close'></use></svg>
 				</button>
-				<div class='px24 py24'>
+				<div class="text-center align-middle bg-red-500 text-white px-4 py-6 md:hidden" role="alert">
+					<svg class='icon m-auto h60 w60'><use xlink:href='#icon-alert'/></svg>
+					<p>Sorry, this website was not designed to work on mobiles.</p>
+					<p>Please come back from your computer or tablet! </p>
+				  </div>
+				<div class='px24 py24 hidden md:block'>
 					<div class='txt-l' id="modal-title">Loading the data...</div>
 					<div class='h12 bg-darken10 relative round-full flex-parent--center-main mb12' id="progressbardiv">
 						<div class='absolute h12 bg-green-light round-full' id="progressbar"></div>
@@ -98,25 +104,27 @@
 		</div>
 	</div>
 	
-	<div class="absolute top-ml left z1 w240-ml px12 py12-ml">
+	<div class="absolute top-ml left z1 w240-ml px12 py12-ml hidden md:block">
 		<div class="flex-parent flex-parent--column viewport-third h-auto-ml hmax-full bg-white round-ml shadow-darken10">
 			<div class="px12 py12 scroll-auto">
 				<h3 class="txt-m txt-bold mb6">Bird Migration Map 2018</h3>
-				<p>After the <a class='link' href="https://bmm.raphaelnussbaumer.com/" target="_blank">first mapping of European nocturnal bird migration in autumn 2016</a>, this newly designed map shows the bird migration for the whole year of 2018. </p>
-				<p>This time, we used <a href="https://github.com/mapbox/mapbox-gl-js" target="_blank" class='link'>mapbox-gl-js</a> to display a vectorial map allowing to custum the visualization on the browser (log-scale, colorbar, etc...) </p>
-				<button class='flex-parent flex-parent--center-cross btn btn--s btn--stroke btn--green round' id="howtonav"><svg class='icon h18 w18 mr3'><use xlink:href='#icon-info'/></svg> How to navigate?</button>
+				<p>Visualize the mass movement of bird migration accross western Europe for the entire 2018 year.</p>
+				<button class='flex-parent m-auto btn btn--s btn--stroke btn--green round mt-4' id="howtonav">
+					<svg class='icon h18 w18 mr3'><use xlink:href='#icon-info'/></svg> How to navigate?
+				</button>
 			</div>
 			<footer class="px12 py12 bg-gray-faint round-b-ml txt-s">
 				<a class='link' href="https://www.researchgate.net/project/Bird-Migration-Modelling-BMM" target="_blank"><i class="fab fa-researchgate"></i>/Bird-Migration-Modelling-BMM</a>
 				<a class='link' href="https://rafnuss-postdoc.github.io/BMM/" target="_blank"><i class="fab fa-github"></i>/Rafnuss-PostDoc/BMM</a>
+				<!--<a class='link' href="#" target="_blank"><i class="fab fa-github"></i>Publication</a>-->
 			</footer>
 		</div>
 	</div>
 	
-	<div class='fixed top right w240  txt-s mx12 my12 '>
+	<div class='fixed top right w240  txt-s mx12 my12 hidden md:block'>
 		<div class='round bg-white shadow-darken10 px12 py12'>
 			<div class='flex-parent flex-parent--space-between-main'>
-				<div class="flex-child"><b>Bird density</b> <span class="txt-xs">[bird/km<sup class='txt-sup'>2</sup>]<span></span></div>
+				<div class="flex-child"><b>Bird density</b> <span class="txt-xs">[bird/km<sup class='txt-sup'>2</sup>]</span></div>
 				<div class="flex-child">
 					<label class='switch-container'>
 						<input type='checkbox' id='logscale' checked />
@@ -135,7 +143,58 @@
 				<div class='flex-child--grow'><input type="number" min="1" class='input textarea--s w60 caxis' id="caxismin" value='1' /></div>
 				<div class='flex-child--grow align-r'><input type="number" min="1" class='input textarea--s w60 caxis' id="caxismax" value='100' /></div>
 			</div>
-			<div class='flex-parent bg-darken10 px6 flex-parent--center-cross'>
+
+			<div class='mt-2'>
+				<b>Bird flight</b> <span class="txt-xs">[m/s]</span>
+			</div>
+			<div class="grid">
+				<div class="col m-auto align-center">
+					<img src="/2018/assets/right-arrow-grey.png" class="inline" style=" width: 10.8px; transform: rotate(-30deg);">
+				</div>
+				<div class="col m-auto align-center">
+					<img src="/2018/assets/right-arrow-grey.png" class="inline" style=" width: 16.2px; transform: rotate(-30deg);">
+				</div>
+				<div class="col m-auto align-center">
+					<img src="/2018/assets/right-arrow-grey.png" class="inline" style=" width: 21.6px; transform: rotate(-30deg);">
+				</div>
+				<div class="col m-auto align-center">
+					<img src="/2018/assets/right-arrow-grey.png" class="inline" style=" width: 27px; transform: rotate(-30deg);">
+				</div>
+				<div class="col m-auto align-center">
+					<img src="/2018/assets/right-arrow-grey.png" class="inline" style=" width: 32.4px; transform: rotate(-30deg);">
+				</div>
+			</div>
+			<div class="grid txt-xs">
+				<div class="col m-auto align-center">5</div>
+				<div class="col"></div>
+				<div class="col m-auto align-center">10</div>
+				<div class="col"></div>
+				<div class="col m-auto align-center">15</div>
+			</div>
+
+			<div class='flex-parent flex-parent--space-between-main mt-2'>
+				<div class="flex-child">
+					<b>Radar</b>
+				</div>
+				<div class="flex-child--grow pl6">
+					<div class="bg-blue inline-block round-full border border--black" style="height: 14px; width: 14px;"></div>
+					<img src="/2018/assets/right-arrow-black.png" class="inline" style="width: 24px; transform: translate(-22px,-5px) rotate(-45deg);">
+				</div>
+			</div>
+			
+			<label class='switch-container'>
+				<input type='checkbox' id='radar' checked/>
+				<div class='switch mr6 top '></div>
+				Hide/show radars
+			</label>
+			
+			<label class='switch-container'>
+				<input type='checkbox' id='rain'/>
+				<div class='switch mr6 top '></div>
+				Hide/show rain
+			</label>
+
+			<div class='flex-parent py6 flex-parent--center-cross'>
 				<div class='flex-child flex-child--no-shrink pr6 '>Opacity</div>
 				<div class='flex-child flex-child--grow'>
 					<div class='range range--s'>
@@ -143,16 +202,6 @@
 					</div>
 				</div>
 			</div>
-			<label class='switch-container'>
-				<input type='checkbox' id='radar' checked/>
-				<div class='switch mr6 top '></div>
-				Hide/show radars
-			</label>
-			<label class='switch-container'>
-				<input type='checkbox' id='rain'/>
-				<div class='switch mr6 top '></div>
-				Hide/show rain
-			</label>
 		</div>
 		<div id="tt-nb-div" class="night mt12 round">
 			<div id="gauge"></div>
@@ -160,7 +209,7 @@
 		</div>
 	</div>
 	
-	<div class='fixed w-full bottom py12 px12'>
+	<div class='fixed w-full bottom py12 px12 hidden md:block'>
 		<div class="h300 bg-white" id="timelinediv" style="display: none;">
 			<!--<div class="flex-parent-inline absolute" id="tablinks-div">
 				<button class="tablinks btn btn--pill btn--pill-hl is-active" onclick="openTab(event, 'plot_density')">Density</button>
@@ -220,22 +269,32 @@
 					</button>
 					<span class="tooltiptext">Timeline</span>
 				</div>
-				<div class='flex-child pb6 px18 border-r border--gray-light flex-child--grow bg-white w-full' style="padding-top: 7px!important;">
+				<div class='flex-child pb6 px18 border-r border--gray-light flex-child--grow bg-white w-full' style="padding-top: 5px!important; padding-bottom: 1px!important;">
+					<div class="grid interest-box">
+						<div class="tooltip" style="margin-left: 78.1%;">
+							<div class="interest" style="width: 19px;"></div>
+							<span class="tooltiptext tooltiptext-interest">16/19-10: largest autumn migration</span>
+						</div>
+						<div class="tooltip" style="margin-left: 24.4%;margin-top: -7px;">
+							<div class="interest" style="width: 2px;"></div>
+							<span class="tooltiptext tooltiptext-interest">29/30-04: peak spring migration</span>
+						</div>
+					</div>
 					<input id='slider' class="slider w-full h12 bg-darken10 round-full" type='range' min='0' max='35071' step='1' value='4196' onchange="sliderchange(event);"/>
 					<div class="grid txt-xs mx-neg12 my-neg2 flex-parent--space-between-main">
-						<p>01-Jan</p>
-						<p>01-Feb</p>
-						<p>01-Mar</p>
-						<p>01-Apr</p>
-						<p>01-May</p>
-						<p>01-Jun</p>
-						<p>01-Jul</p>
-						<p>01-Aug</p>
-						<p>01-Sep</p>
-						<p>01-Oct</p>
-						<p>01-Nov</p>
-						<p>01-Dec</p>
-						<p>01-Jan</p>
+						<p><span class="ticks"></span>01-Jan</p>
+						<p><span class="ticks"></span>01-Feb</p>
+						<p><span class="ticks"></span>01-Mar</p>
+						<p><span class="ticks"></span>01-Apr</p>
+						<p><span class="ticks"></span>01-May</p>
+						<p><span class="ticks"></span>01-Jun</p>
+						<p><span class="ticks"></span>01-Jul</p>
+						<p><span class="ticks"></span>01-Aug</p>
+						<p><span class="ticks"></span>01-Sep</p>
+						<p><span class="ticks"></span>01-Oct</p>
+						<p><span class="ticks"></span>01-Nov</p>
+						<p><span class="ticks"></span>01-Dec</p>
+						<p><span class="ticks"></span>01-Jan</p>
 					</div>
 				</div>
 				<div class='range py24 px12 border-r border--gray-light bg-white round-r' id="speed-div">

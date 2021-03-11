@@ -1,7 +1,7 @@
 
 let date, time=[];
 const d0 = new Date(2018,01,01);
-jQuery.getJSON('/assets/date.json', function(data){
+jQuery.getJSON('./assets/date.json', function(data){
 	date=data;
 	var d = new Date(d0);
 	for (var i = 0; i < date.length; i += 1) {
@@ -28,7 +28,7 @@ map.addControl(draw_poly);
 map.on('draw.create', function(e){
 	if (e.features[0].geometry.type == 'Point'){
 		console.log('Point')
-		oReq_ll.open("GET", "/assets/bin/ll_" + findNearest(e.features[0].geometry.coordinates) + ".bin", true);
+		oReq_ll.open("GET", "./assets/bin/ll_" + findNearest(e.features[0].geometry.coordinates) + ".bin", true);
 		oReq_ll.send(null);
 	} else if (e.features[0].geometry.type == 'Polygon') {
 		
@@ -104,7 +104,7 @@ oReq.onprogress = function(oEvent) {
 		jQuery('#progressbar').css('width',percentComplete+'%')
 	}
 };
-oReq.open("GET", "/assets/density.bin", true);
+oReq.open("GET", "./assets/density.bin", true);
 
 
 
@@ -127,7 +127,7 @@ oReq2.onload = function (oEvent) {
 		}
 	}
 };
-oReq2.open("GET", "/assets/rain.bin", true);
+oReq2.open("GET", "./assets/rain.bin", true);
 
 
 if (!window.matchMedia("only screen and (max-width: 760px)").matches) {
@@ -141,7 +141,7 @@ if (!window.matchMedia("only screen and (max-width: 760px)").matches) {
 map.on('load', function() {
 	
 	color = jQuery('input[name="radio-bar"]:checked').val();
-	jQuery.getJSON('/assets/grid.geojson', function(geojson){
+	jQuery.getJSON('./assets/grid.geojson', function(geojson){
 		grid_geojson = geojson;
 		map.addSource('grid_source', { 
 			type: 'geojson', 
@@ -164,7 +164,7 @@ map.on('load', function() {
 		}
 	})
 	
-	jQuery.getJSON('/assets/quiver.geojson', function(geojson){
+	jQuery.getJSON('./assets/quiver.geojson', function(geojson){
 		
 		quiver_geojson = geojson;
 		quiver_geojson.features = quiver_geojson.features.map( r => {
@@ -173,7 +173,7 @@ map.on('load', function() {
 			return r
 		});
 
-		map.loadImage('/assets/right-arrow-grey.png', function(error, image) {
+		map.loadImage('./assets/right-arrow-grey.png', function(error, image) {
 			map.addImage('arrow', image);
 			
 			
@@ -183,10 +183,10 @@ map.on('load', function() {
 				/*"cluster": false,
 				"clusterRadius": 80,
 				"clusterProperties": {
-					//"angle": ["get", "angle"],//["/", ["+", ["get", "angle"]] , ["+", ["accumulated"], 1] ],
+					//"angle": ["get", "angle"],//["./", ["+", ["get", "angle"]] , ["+", ["accumulated"], 1] ],
 					//"size": [["+", ["accumulated"], ["get", "size"]], ["get", "size"]]
 					//["+", ["case", [">",["get", "size"],0], 1, 0]],
-					"size": "point_count_abbreviated"//["+", ["get", "size"]]
+					"size": "point_count_abbreviated".//["+", ["get", "size"]]
 				}*/
 			});
 			
@@ -209,7 +209,7 @@ map.on('load', function() {
 		})
 	})
 
-	jQuery.getJSON('/assets/radar.geojson', function(geojson){
+	jQuery.getJSON('./assets/radar.geojson', function(geojson){
 		radar_geojson = geojson;
 
 		// Initite with 0 data (invisiable on map)
@@ -239,7 +239,7 @@ map.on('load', function() {
 			"filter": ["!=", "value", 0]
 		})
 
-		map.loadImage('/assets/right-arrow-black.png', function(error, image) {
+		map.loadImage('./assets/right-arrow-black.png', function(error, image) {
 			map.addImage('arrow-radar', image);
 			map.addLayer({
 				id: 'radar_quiver_layer',
@@ -399,7 +399,7 @@ map.on('load', function() {
 			col.push(d3colors(i));
 		}
 		
-		jQuery.getJSON('/assets/MTR.json',function(MTR){
+		jQuery.getJSON('./assets/MTR.json',function(MTR){
 			
 			gd_style ={
 				width: '100%',
@@ -505,7 +505,7 @@ const sliderchange = function(){
 		map.setLayoutProperty('grid_layer', 'visibility', 'visible');
 		map.setLayoutProperty('quiver_layer', 'visibility', 'visible');
 		//map.setLayoutProperty('radar_layer', 'visibility', 'visible');
-		//oReq.open("GET", "/assets/bin/density_" + String(date[s.value]) + ".bin", true);
+		//oReq.open("GET", "./assets/bin/density_" + String(date[s.value]) + ".bin", true);
 		//oReq.send(null);
 		
 		let dt = dens[date[s.value]]

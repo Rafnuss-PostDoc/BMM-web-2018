@@ -73,7 +73,12 @@ oReq.responseType = "arraybuffer";
 
 oReq.onload = function (oEvent) {
 	if (oReq.response) {
-		var byteArray = new Int16Array(oReq.response);
+		var binData = new Uint8Array(oReq.response);
+		var byteArray = pako.inflate(binData);
+		console.log(byteArray)
+		byteArray=new Int16Array(byteArray.buffer, byteArray.byteOffset, byteArray.byteLength/2);
+		
+
 		for (var i = 1; i < byteArray.length; i++) {
 			byteArray[i] = byteArray[i-1] + byteArray[i];//+ ( ( byteArray[i] >> 1 ) ^ -( byteArray[i] & 0x1 ) );
 		}
@@ -104,7 +109,7 @@ oReq.onprogress = function(oEvent) {
 		jQuery('#progressbar').css('width',percentComplete+'%')
 	}
 };
-oReq.open("GET", "./assets/density.bin", true);
+oReq.open("GET", "./assets/density.bin.gz", true);
 
 
 
@@ -112,7 +117,11 @@ var oReq2 = new XMLHttpRequest();
 oReq2.responseType = "arraybuffer";
 oReq2.onload = function (oEvent) {
 	if (oReq2.response) {
-		byteArray = new Uint8Array(oReq2.response);
+		var binData = new Uint8Array(oReq2.response);
+
+		var byteArray = pako.inflate(binData);
+
+
 		const chunk = 2025;
 		rain = new Array( Math.ceil(byteArray.length/chunk) );
 		var j = 0
@@ -127,7 +136,7 @@ oReq2.onload = function (oEvent) {
 		}
 	}
 };
-oReq2.open("GET", "./assets/rain.bin", true);
+oReq2.open("GET", "./assets/rain.bin.gz", true);
 
 
 if (!window.matchMedia("only screen and (max-width: 760px)").matches) {
